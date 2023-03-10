@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from dataclasses import dataclass
+from functools import wraps
 from os.path import join
 from typing import List
 
@@ -9,6 +10,7 @@ import pandas as pd
 from threading import Thread
 import glob
 
+from api.utils import thread_handle_error
 from database import DatabaseClient
 from database.client import COLS
 from database.models import EMPLOYEES_TABLE, DEPARTMENT_TABLE, JOB_TABLE
@@ -56,6 +58,7 @@ class CSVWatcher(Thread):
 
         return file2table_list
 
+    @thread_handle_error
     def _insert_to_db(self, filep2table: List[CSVFilepathForTable]) -> None:
         """
         Reads the csv files, by chunks, and uses the DatabaseClient to store data in tables.
@@ -78,6 +81,7 @@ class CSVWatcher(Thread):
                 logging.info("Done!")
 
     @staticmethod
+    @thread_handle_error
     def _rename_csv(filep2table: List[CSVFilepathForTable]) -> None:
         """
         Rename csv files in order to be ignored later by Worker.
@@ -102,3 +106,4 @@ class CSVWatcher(Thread):
             time.sleep(self.DELAY)
 
         logging.warning("CSVWatcher not looking for historic data anymore.")
+

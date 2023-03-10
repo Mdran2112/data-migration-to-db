@@ -6,7 +6,11 @@ from flask_smorest import Api
 
 from api import DB_CLIENT
 from api.csv_watcher import CSVWatcher
-from utils import CSV_DIRECTORY_PATH
+from globals import CSV_DIRECTORY_PATH
+
+from api.controllers.employees_controller import blp as employees_blp
+from api.controllers.departments_controller import blp as departments_blp
+from api.controllers.jobs_controllers import blp as jobs_blp
 
 
 def create_app():
@@ -27,9 +31,9 @@ def create_app():
         watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT)
         watcher.start()
 
-    # api.register_blueprint(send_msgs_blueprint)
-    # api.register_blueprint(acqs_blueprint)
-    # api.register_blueprint(prtyps_blueprint)
+    api.register_blueprint(employees_blp)
+    api.register_blueprint(departments_blp)
+    api.register_blueprint(jobs_blp)
 
     return app
 
