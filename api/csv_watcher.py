@@ -24,6 +24,7 @@ class CSVWatcher(Thread):
 
     def __init__(self, csv_directory_path: str, client: DatabaseClient):
         super().__init__()
+        self.active = True
         self.csv_directory_path = csv_directory_path
         self.client = client
         self.filename_key_to_table_name = {
@@ -50,8 +51,20 @@ class CSVWatcher(Thread):
     def _insert_to_db(self, filep2table: List[CSVFilepathForTable]) -> None:
         for ft in filep2table:
             cols = COLS[ft.table]
-            for chunk in pd.read_csv(ft.filepath, chunksize=100000):
+            for inx, chunk in enumerate(pd.read_csv(ft.filepath,
+                                                    chunksize=100000)):  # csv files may be too big, so I read it in
+                # chunks.
                 objects = list(map(lambda r: {col: field for col, field in zip(cols, r)}, chunk.values))
-                logging.info(f"Inserting new rows into table {ft.table}")
+                logging.info(f"Inserting new rows into table {ft.table}. Chunk {inx}.")
                 self.client.insert_to(table=ft.table, objects=objects)
+
+    def run(self) -> None:
+        while self.active:
+            file2table_list = self._look_for_csv()
+            if len(file2table_list) > 0:
+                logging.info("New historic data founded!")
+                logging.info(f"{file2table_list}")
+            self._insert_to_db(file2table_list)
+
+        logging.warning("CSVWatcher not looking for historic data anymore.")
 
