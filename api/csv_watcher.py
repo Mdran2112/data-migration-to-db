@@ -11,6 +11,7 @@ import glob
 
 from database import DatabaseClient
 from database.client import COLS
+from database.models import EMPLOYEES_TABLE, DEPARTMENT_TABLE, JOB_TABLE
 
 
 @dataclass
@@ -23,6 +24,7 @@ class CSVWatcher(Thread):
     """
     Looks for csv files that contains historic data, in order to load and store it into the database.
     """
+    DELAY = 60 * 10  # time delay for looking new csv files
 
     def __init__(self, csv_directory_path: str, client: DatabaseClient):
         super().__init__()
@@ -30,9 +32,9 @@ class CSVWatcher(Thread):
         self.csv_directory_path = csv_directory_path
         self.client = client
         self.filename_key_to_table_name = {
-            "hired_employees.csv": "employees",
-            "departments.csv": "departments",
-            "jobs.csv": "jobs"
+            "hired_employees.csv": EMPLOYEES_TABLE,
+            "departments.csv": DEPARTMENT_TABLE,
+            "jobs.csv": JOB_TABLE
         }  # this map is used to tell the CSVWatcher that data from a csv file has to be inserted in certain table.
         # For ex: csv files that contain rows for 'employees' table, must be mamed 'hired_employees.csv'.
 
@@ -51,7 +53,6 @@ class CSVWatcher(Thread):
                 continue
             f2table = CSVFilepathForTable(filepath, self.filename_key_to_table_name[filename])
             file2table_list.append(f2table)
-            logging.info(f"Founded file in {f2table.filepath} that contains data for table {f2table.table}")
 
         return file2table_list
 
@@ -98,6 +99,6 @@ class CSVWatcher(Thread):
                 logging.info(f"{file2table_list}")
             self._insert_to_db(file2table_list)
             self._rename_csv(file2table_list)
-            time.sleep(10)
+            time.sleep(self.DELAY)
 
         logging.warning("CSVWatcher not looking for historic data anymore.")
