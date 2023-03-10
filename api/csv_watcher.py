@@ -37,6 +37,11 @@ class CSVWatcher(Thread):
         # For ex: csv files that contain rows for 'employees' table, must be mamed 'hired_employees.csv'.
 
     def _look_for_csv(self) -> List[CSVFilepathForTable]:
+        """
+        Inspects the folder where csv files are located and return a list of CSVFilepathForTable: objects that stores
+        a filepath and its associated db table.
+        :return: List[CSVFilepathForTable]
+        """
         file2table_list = []
         filenames_keys = self.filename_key_to_table_name.keys()
         for filepath in glob.glob(join(self.csv_directory_path, "*.csv")):
@@ -51,6 +56,11 @@ class CSVWatcher(Thread):
         return file2table_list
 
     def _insert_to_db(self, filep2table: List[CSVFilepathForTable]) -> None:
+        """
+        Reads the csv files, by chunks, and uses the DatabaseClient to store data in tables.
+        :param filep2table: A list of CSVFilepathForTable objects.
+        :return:
+        """
         for ft in filep2table:
             cols = COLS[ft.table]
             for inx, chunk in enumerate(pd.read_csv(ft.filepath, names=cols,
@@ -70,7 +80,7 @@ class CSVWatcher(Thread):
     def _rename_csv(filep2table: List[CSVFilepathForTable]) -> None:
         """
         Rename csv files in order to be ignored later by Worker.
-        :param filep2table:
+        :param filep2table: A list of CSVFilepathForTable objects.
         :return: None
         """
         for ft in filep2table:
