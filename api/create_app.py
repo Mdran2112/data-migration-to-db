@@ -1,15 +1,17 @@
 import os
 
+from dotenv import load_dotenv
 from flask import Flask
 from flask_smorest import Api
 
 from api import DB_CLIENT
 from api.csv_watcher import CSVWatcher
-from database import Base, engine
 from utils import CSV_DIRECTORY_PATH
 
 
 def create_app():
+    load_dotenv()
+
     app = Flask(__name__)
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Employees REST API"
@@ -21,7 +23,7 @@ def create_app():
 
     api = Api(app)
 
-    if os.getenv("FIND_HISTORIC", True):
+    if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
         watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT)
         watcher.start()
 

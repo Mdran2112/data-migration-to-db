@@ -1,6 +1,9 @@
+import logging
 from datetime import date
+from functools import wraps
 from typing import List, Dict, Any, Tuple
 
+from pymysql import ProgrammingError
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -12,6 +15,18 @@ COLS = {
     DEPARTMENT_TABLE: DEPARTMENT_COLS,
     JOB_TABLE: JOB_COLS
 }
+
+
+def handle_error(f):
+    @wraps(f)
+    def decorated_function(*args, **kws):
+        try:
+            resp = f(*args, **kws)
+            return resp
+        except Exception as ex:
+            logging.error(str(ex))
+
+    return decorated_function
 
 
 class DatabaseClient:
@@ -26,14 +41,17 @@ class DatabaseClient:
     def __init__(self, session: Session) -> None:
         self._session = session
 
+    @handle_error
     def insert_employees(self, objects: List[Dict[str, Any]]) -> None:
         self._session.bulk_insert_mappings(mapper=Employee, mappings=objects)
         self.session_commit()
 
+    @handle_error
     def insert_departments(self, objects: List[Dict[str, Any]]) -> None:
         self._session.bulk_insert_mappings(mapper=Department, mappings=objects)
         self.session_commit()
 
+    @handle_error
     def insert_jobs(self, objects: List[Dict[str, Any]]) -> None:
         self._session.bulk_insert_mappings(mapper=Job, mappings=objects)
         self.session_commit()

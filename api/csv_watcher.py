@@ -1,4 +1,6 @@
 import logging
+import os
+import time
 from dataclasses import dataclass
 from os.path import join
 from typing import List
@@ -51,20 +53,41 @@ class CSVWatcher(Thread):
     def _insert_to_db(self, filep2table: List[CSVFilepathForTable]) -> None:
         for ft in filep2table:
             cols = COLS[ft.table]
-            for inx, chunk in enumerate(pd.read_csv(ft.filepath,
-                                                    chunksize=100000)):  # csv files may be too big, so I read it in
+            for inx, chunk in enumerate(pd.read_csv(ft.filepath, names=cols,
+                                                    chunksize=100000,
+                                                    infer_datetime_format=True)):  # csv files may be too big, so I read it in
                 # chunks.
+                chunk = chunk.dropna()
+                if "datetime" in cols:
+                    chunk["datetime"] = pd.to_datetime(chunk["datetime"])
+
                 objects = list(map(lambda r: {col: field for col, field in zip(cols, r)}, chunk.values))
                 logging.info(f"Inserting new rows into table {ft.table}. Chunk {inx}.")
                 self.client.insert_to(table=ft.table, objects=objects)
+                logging.info("Done!")
+
+    @staticmethod
+    def _rename_csv(filep2table: List[CSVFilepathForTable]) -> None:
+        """
+        Rename csv files in order to be ignored later by Worker.
+        :param filep2table:
+        :return: None
+        """
+        for ft in filep2table:
+            filepath = ft.filepath
+            filename = os.path.basename(filepath)
+            new_filepath = join(os.path.dirname(filepath), "LOAED_" + filename)
+            os.rename(filepath, new_filepath)
 
     def run(self) -> None:
         while self.active:
+            logging.info("Looking for csv data...")
             file2table_list = self._look_for_csv()
             if len(file2table_list) > 0:
                 logging.info("New historic data founded!")
                 logging.info(f"{file2table_list}")
             self._insert_to_db(file2table_list)
+            self._rename_csv(file2table_list)
+            time.sleep(10)
 
         logging.warning("CSVWatcher not looking for historic data anymore.")
-
