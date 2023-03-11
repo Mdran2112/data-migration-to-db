@@ -3,8 +3,8 @@ from marshmallow.validate import Length
 
 
 class DepartmentSchema(Schema):
-    id = fields.Int(required=True)
-    department = fields.Str(required=True)
+    id = fields.Int(missing=None)
+    department = fields.Str(missing=None)
 
 
 class DepartmentsBodySchema(Schema):

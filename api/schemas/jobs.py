@@ -3,8 +3,8 @@ from marshmallow.validate import Length
 
 
 class JobSchema(Schema):
-    id = fields.Int(required=True)
-    job = fields.Str(required=True)
+    id = fields.Int(missing=None)
+    job = fields.Str(missing=None)
 
 
 class JobsBodySchema(Schema):
