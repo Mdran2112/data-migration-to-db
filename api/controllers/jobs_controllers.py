@@ -19,7 +19,16 @@ class DepartmentsController(BaseController):
     @auth.login_required
     @blp.arguments(JobsBodySchema,
                    example={
-                       "jobs": []
+                       "jobs": [
+                           {
+                               "id": 1,
+                               "job": "Manager"
+                           },
+                           {
+                               "id": 2,
+                               "job": "Recruiter"
+                           }
+                       ]
                    })
     @blp.response(HTTP_201_CREATED,
                   description="Inserts jobs data in database.",

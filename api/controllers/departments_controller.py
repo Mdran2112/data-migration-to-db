@@ -19,7 +19,16 @@ class DepartmentsController(BaseController):
     @auth.login_required
     @blp.arguments(DepartmentsBodySchema,
                    example={
-                       "departments": []
+                       "departments": [
+                           {
+                               "id": 6,
+                               "department": "Maintenance"
+                           },
+                           {
+                               "id": 9,
+                               "department": "Staff"
+                           }
+                       ]
                    })
     @blp.response(HTTP_201_CREATED,
                   description="Inserts departments data in database.",

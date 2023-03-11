@@ -18,7 +18,16 @@ class EmployeesController(BaseController):
     @auth.login_required
     @blp.arguments(EmployeesBodySchema,
                    example={
-                       "employees": []
+                       "employees": [
+                           {
+                               "id": 2006, "name": "Martin", "datetime": "2023-03-10T02:48:42",
+                               "department_id": 4, "job_id": 71
+                           },
+                           {
+                               "id": 2006, "name": "Liz", "datetime": "2023-03-10T02:48:42",
+                               "department_id": 4, "job_id": 72
+                           }
+                       ]
                    })
     @blp.response(HTTP_201_CREATED,
                   description="Inserts employees data in database.",
