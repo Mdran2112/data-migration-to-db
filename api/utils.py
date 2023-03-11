@@ -34,6 +34,9 @@ def service_handle_error(f):
         except DatabaseError as ie:
             logging.error(str(ie))
             abort(HTTP_422_UNPROCESSABLE_ENTITY, message=[str(ie)])
+        except ValueError as ve:
+            logging.error(str(ve))
+            abort(HTTP_422_UNPROCESSABLE_ENTITY, message=[str(ve)])
         except Exception as ex:
             logging.error(str(ex))
             abort(HTTP_500_INTERNAL_SERVER_ERROR, message=[str(ex)])

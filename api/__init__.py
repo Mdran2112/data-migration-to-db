@@ -4,6 +4,8 @@ import sys
 from dotenv import load_dotenv
 from sqlalchemy.orm import sessionmaker
 
+from api.rules import AllFieldsRequired
+
 load_dotenv()
 
 for handler in logging.root.handlers[:]:
@@ -17,4 +19,4 @@ Base.metadata.create_all(engine, checkfirst=True)
 
 session = sessionmaker(engine)()
 DB_CLIENT = DatabaseClient(session)
-SERVICE = BaseService(db_client=DB_CLIENT)
+SERVICE = BaseService(db_client=DB_CLIENT, rules=[AllFieldsRequired()])

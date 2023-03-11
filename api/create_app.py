@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_smorest import Api
 
-from api import DB_CLIENT
+from api import DB_CLIENT, AllFieldsRequired
 from api.csv_watcher import CSVWatcher
 from globals import CSV_DIRECTORY_PATH
 
@@ -28,7 +28,7 @@ def create_app():
     api = Api(app)
 
     if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
-        watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT)
+        watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
         watcher.start()
 
     api.register_blueprint(employees_blp)

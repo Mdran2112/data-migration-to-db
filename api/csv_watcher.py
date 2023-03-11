@@ -10,6 +10,10 @@ import pandas as pd
 from threading import Thread
 import glob
 
+from numpy import nan
+from pandas import NaT
+
+from api.rules import DataRule
 from api.utils import thread_handle_error
 from database import DatabaseClient
 from database.client import COLS
@@ -28,8 +32,9 @@ class CSVWatcher(Thread):
     """
     DELAY = 60 * 10  # time delay for looking new csv files
 
-    def __init__(self, csv_directory_path: str, client: DatabaseClient):
+    def __init__(self, csv_directory_path: str, client: DatabaseClient, rules: List[DataRule]):
         super().__init__()
+        self.rules = rules
         self.active = True
         self.csv_directory_path = csv_directory_path
         self.client = client
@@ -71,11 +76,16 @@ class CSVWatcher(Thread):
                                                     chunksize=100000,
                                                     infer_datetime_format=True)):  # csv files may be too big, so I read it in
                 # chunks.
-                chunk = chunk.dropna()
+
+                chunk = chunk.replace(nan, None)
                 if "datetime" in cols:
                     chunk["datetime"] = pd.to_datetime(chunk["datetime"])
 
                 objects = list(map(lambda r: {col: field for col, field in zip(cols, r)}, chunk.values))
+
+                # apply filter by rules
+                objects = list(filter(lambda o: True in [rule.satisfies(o) for rule in self.rules], objects))
+
                 logging.info(f"Inserting new rows into table {ft.table}. Chunk {inx}.")
                 self.client.insert_to(table=ft.table, objects=objects)
                 logging.info("Done!")
@@ -106,4 +116,3 @@ class CSVWatcher(Thread):
             time.sleep(self.DELAY)
 
         logging.warning("CSVWatcher not looking for historic data anymore.")
-

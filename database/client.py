@@ -1,6 +1,8 @@
+import logging
 from typing import List, Dict, Any
 
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from database import Base
 from database.models import Employee, Department, Job, EMPLOYEES_TABLE, DEPARTMENT_TABLE, \
@@ -26,7 +28,12 @@ class DatabaseClient:
         self._session = session
 
     def _insert(self, mapper: Base, objects: List[Dict[str, Any]]):
+        len_o = len(objects)
+        if len_o == 0:
+            raise ValueError("None of the objects could be inserted, maybe because all of them didn't satisfied the "
+                             "Data Rules.")
         try:
+            logging.info(f"{len_o} will be inserted.")
             self._session.bulk_insert_mappings(mapper=mapper, mappings=objects)
             self.session_commit()
         except Exception as ex:

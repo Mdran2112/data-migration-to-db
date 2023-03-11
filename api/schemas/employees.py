@@ -3,11 +3,11 @@ from marshmallow.validate import Length
 
 
 class EmployeeSchema(Schema):
-    id = fields.Int(required=True)
-    name = fields.Str(required=True)
-    datetime = fields.DateTime(required=True)
-    department_id = fields.Int(required=True)
-    job_id = fields.Int(required=True)
+    id = fields.Int(missing=None)
+    name = fields.Str(missing=None)
+    datetime = fields.DateTime(missing=None)
+    department_id = fields.Int(missing=None)
+    job_id = fields.Int(missing=None)
 
 
 class EmployeesBodySchema(Schema):
