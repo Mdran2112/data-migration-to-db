@@ -2,7 +2,6 @@ import logging
 import os
 import time
 from dataclasses import dataclass
-from functools import wraps
 from os.path import join
 from typing import List
 
@@ -11,7 +10,6 @@ from threading import Thread
 import glob
 
 from numpy import nan
-from pandas import NaT
 
 from api.rules import DataRule
 from api.utils import thread_handle_error
@@ -22,8 +20,9 @@ from database.models import EMPLOYEES_TABLE, DEPARTMENT_TABLE, JOB_TABLE
 
 @dataclass
 class CSVFilepathForTable:
-    filepath: str
-    table: str
+    filepath: str  # absolute filepath
+    table: str  # csv file's corresponding table
+    loaded: bool = False  # whether the data was inserted in table or not
 
 
 class CSVWatcher(Thread):
@@ -76,7 +75,6 @@ class CSVWatcher(Thread):
                                                     chunksize=100000,
                                                     infer_datetime_format=True)):  # csv files may be too big, so I read it in
                 # chunks.
-
                 chunk = chunk.replace(nan, None)
                 if "datetime" in cols:
                     chunk["datetime"] = pd.to_datetime(chunk["datetime"])
@@ -89,6 +87,7 @@ class CSVWatcher(Thread):
                 logging.info(f"Inserting new rows into table {ft.table}. Chunk {inx}.")
                 self.client.insert_to(table=ft.table, objects=objects)
                 logging.info("Done!")
+                ft.loaded = True
 
     @staticmethod
     @thread_handle_error
@@ -99,9 +98,10 @@ class CSVWatcher(Thread):
         :return: None
         """
         for ft in filep2table:
+            file_status = "LOADED" if ft.loaded else "ERROR"
             filepath = ft.filepath
             filename = os.path.basename(filepath)
-            new_filepath = join(os.path.dirname(filepath), "LOAED_" + filename)
+            new_filepath = join(os.path.dirname(filepath), file_status+"_" + filename)
             os.rename(filepath, new_filepath)
 
     def run(self) -> None:

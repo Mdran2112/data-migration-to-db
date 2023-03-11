@@ -13,8 +13,11 @@ def thread_handle_error(f):
         try:
             resp = f(*args, **kws)
             return resp
+        except IntegrityError as ie:
+            logging.error(str(ie))
         except Exception as ex:
             logging.error(str(ex))
+            return False
 
     return decorated_function
 

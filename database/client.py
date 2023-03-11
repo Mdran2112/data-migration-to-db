@@ -36,6 +36,9 @@ class DatabaseClient:
             logging.info(f"{len_o} will be inserted.")
             self._session.bulk_insert_mappings(mapper=mapper, mappings=objects)
             self.session_commit()
+        except IntegrityError as ie:
+            self._session.rollback()
+            raise ie
         except Exception as ex:
             self._session.rollback()
             raise ex

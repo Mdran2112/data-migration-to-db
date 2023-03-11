@@ -4,14 +4,13 @@ import sys
 from dotenv import load_dotenv
 from sqlalchemy.orm import sessionmaker
 
-from api.rules import AllFieldsRequired
-
 load_dotenv()
 
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
+from api.rules import AllFieldsRequired
 from api.services.base_service import BaseService
 from database import engine, DatabaseClient, Base
 

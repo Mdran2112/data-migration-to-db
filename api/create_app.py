@@ -27,10 +27,6 @@ def create_app():
 
     api = Api(app)
 
-    if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
-        watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
-        watcher.start()
-
     api.register_blueprint(employees_blp)
     api.register_blueprint(departments_blp)
     api.register_blueprint(jobs_blp)
@@ -39,4 +35,8 @@ def create_app():
 
 
 if __name__ == "__main__":
+    if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
+        watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
+        watcher.start()
+
     create_app().run(debug=True)
