@@ -7,7 +7,7 @@ from api.utils import service_handle_error
 from database import DatabaseClient
 
 
-class BaseService:
+class TransactionService:
 
     def __init__(self, db_client: DatabaseClient, rules: List[DataRule]) -> None:
         self.db_client = db_client

@@ -7,6 +7,7 @@ from api.controllers import auth
 from api.controllers.base_controller import BaseController
 from api.schemas import JobsBodySchema
 from database.models import JOB_TABLE
+from globals import HTTP_422_UNPROCESSABLE_ENTITY
 
 blp = Blueprint("Jobs", "jobs", description="")
 
@@ -37,8 +38,15 @@ class DepartmentsController(BaseController):
                       "code": HTTP_201_CREATED,
                       "status": "Created"
                   })
-    @blp.response(HTTP_400_BAD_REQUEST,
+    @blp.response(HTTP_422_UNPROCESSABLE_ENTITY,
                   description=".",
-                  example={})
+                  example={
+                      "code": 422,
+                      "message": [
+                          "None of the objects could be inserted, maybe because all of them didn't satisfied the Data "
+                          "Rules."
+                      ],
+                      "status": "Unprocessable Entity"
+                  })
     def post(self, input_params: Dict[str, Any]):
         return super().post(input_params)

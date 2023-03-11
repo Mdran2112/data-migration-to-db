@@ -11,11 +11,11 @@ for handler in logging.root.handlers[:]:
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 from api.rules import AllFieldsRequired
-from api.services.base_service import BaseService
+from api.services.transaction_service import TransactionService
 from database import engine, DatabaseClient, Base
 
 Base.metadata.create_all(engine, checkfirst=True)
 
 session = sessionmaker(engine)()
 DB_CLIENT = DatabaseClient(session)
-SERVICE = BaseService(db_client=DB_CLIENT, rules=[AllFieldsRequired()])
+SERVICE = TransactionService(db_client=DB_CLIENT, rules=[AllFieldsRequired()])
