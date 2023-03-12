@@ -4,7 +4,7 @@ from flask_api.status import HTTP_201_CREATED
 
 from api.rules import DataRule
 from api.utils import service_handle_error
-from database import DatabaseClient
+from database import DatabaseTransactionClient
 
 
 class TransactionService:
@@ -12,7 +12,7 @@ class TransactionService:
     Service for requesting inserts to the Data Base.
     It requires a DatabaseClient and a list of DataRule.
     """
-    def __init__(self, db_client: DatabaseClient, rules: List[DataRule]) -> None:
+    def __init__(self, db_client: DatabaseTransactionClient, rules: List[DataRule]) -> None:
         self.db_client = db_client
         self.rules = rules
 

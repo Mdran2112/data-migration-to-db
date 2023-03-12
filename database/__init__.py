@@ -1,2 +1,2 @@
 from database.db import engine, Base
-from database.client import DatabaseClient
+from database.clients.transaction_client import DatabaseTransactionClient

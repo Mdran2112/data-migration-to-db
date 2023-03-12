@@ -15,9 +15,9 @@ COLS = {
 }
 
 
-class DatabaseClient:
+class DatabaseTransactionClient:
     """
-    client used for interacting with database.
+    client used for inserting data into database.
     Attributes
     ----------
     session: Session

@@ -1,12 +1,14 @@
 import os
+import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 from flask import Flask
 from flask_smorest import Api
 
-from api import DB_CLIENT, AllFieldsRequired
-from api.csv_watcher import CSVWatcher
+from api import DB_CLIENT, AllFieldsRequired, BACKUP_CLIENT
+from api.workers.backup_worker import BackupWorker
+from api.workers.csv_watcher_worker import CSVWatcherWorker
 from globals import CSV_DIRECTORY_PATH
 
 from api.controllers.employees_controller import blp as employees_blp
@@ -36,10 +38,19 @@ def create_app():
 
 
 if __name__ == "__main__":
+
     if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
-        watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
-        sched = BackgroundScheduler()
-        sched.add_job(watcher.run, 'interval', seconds=5)
-        sched.start()
+        watcher = CSVWatcherWorker(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
+        historic_csv_sched = BackgroundScheduler()
+        historic_csv_sched.add_job(watcher.run, 'interval', seconds=5)
+        historic_csv_sched.start()
+
+    time.sleep(5)
+
+    if os.getenv("BUILD_BACKUP", True) in [True, "True", "true"]:
+        backup_worker = BackupWorker(client=BACKUP_CLIENT)
+        backup_sched = BackgroundScheduler()
+        backup_sched.add_job(backup_worker.run, 'interval', seconds=5)
+        backup_sched.start()
 
     create_app().run(debug=True)

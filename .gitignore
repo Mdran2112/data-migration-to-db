@@ -4,4 +4,5 @@ api/__pycache__
 database/__pycache__
 mysql
 historic
+backup
 .env

@@ -11,8 +11,8 @@ from numpy import nan
 
 from api.rules import DataRule
 from api.utils import thread_handle_error
-from database import DatabaseClient
-from database.client import COLS
+from database import DatabaseTransactionClient
+from database.clients.transaction_client import COLS
 from database.models import EMPLOYEES_TABLE, DEPARTMENT_TABLE, JOB_TABLE
 
 
@@ -23,12 +23,12 @@ class CSVFilepathForTable:
     loaded: bool = False  # whether the data was inserted in table or not
 
 
-class CSVWatcher:
+class CSVWatcherWorker:
     """
     Looks for csv files that contains historic data, in order to load and store it into the database.
     """
 
-    def __init__(self, csv_directory_path: str, client: DatabaseClient, rules: List[DataRule]):
+    def __init__(self, csv_directory_path: str, client: DatabaseTransactionClient, rules: List[DataRule]):
         super().__init__()
         self.rules = rules
         self.active = True
