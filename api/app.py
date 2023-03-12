@@ -17,7 +17,20 @@ from api.controllers.jobs_controllers import blp as jobs_blp
 
 
 def create_app():
-    load_dotenv()
+
+    if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
+        watcher = CSVWatcherWorker(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
+        historic_csv_sched = BackgroundScheduler()
+        historic_csv_sched.add_job(watcher.run, 'interval', seconds=60*5)
+        historic_csv_sched.start()
+
+    time.sleep(5)
+
+    if os.getenv("BUILD_BACKUP", True) in [True, "True", "true"]:
+        backup_worker = BackupWorker(client=BACKUP_CLIENT)
+        backup_sched = BackgroundScheduler()
+        backup_sched.add_job(backup_worker.run, 'cron', day_of_week='mon-fri', hour=6, minute=0)
+        backup_sched.start()
 
     app = Flask(__name__)
     app.config["PROPAGATE_EXCEPTIONS"] = True
@@ -38,19 +51,4 @@ def create_app():
 
 
 if __name__ == "__main__":
-
-    if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
-        watcher = CSVWatcherWorker(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
-        historic_csv_sched = BackgroundScheduler()
-        historic_csv_sched.add_job(watcher.run, 'interval', seconds=5)
-        historic_csv_sched.start()
-
-    time.sleep(5)
-
-    if os.getenv("BUILD_BACKUP", True) in [True, "True", "true"]:
-        backup_worker = BackupWorker(client=BACKUP_CLIENT)
-        backup_sched = BackgroundScheduler()
-        backup_sched.add_job(backup_worker.run, 'interval', seconds=5)
-        backup_sched.start()
-
     create_app().run(debug=True)
