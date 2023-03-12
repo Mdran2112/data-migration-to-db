@@ -1,12 +1,10 @@
 import logging
 import os
-import time
 from dataclasses import dataclass
 from os.path import join
 from typing import List
 
 import pandas as pd
-from threading import Thread
 import glob
 
 from numpy import nan
@@ -25,11 +23,10 @@ class CSVFilepathForTable:
     loaded: bool = False  # whether the data was inserted in table or not
 
 
-class CSVWatcher(Thread):
+class CSVWatcher:
     """
     Looks for csv files that contains historic data, in order to load and store it into the database.
     """
-    DELAY = 60 * 10  # time delay for looking new csv files
 
     def __init__(self, csv_directory_path: str, client: DatabaseClient, rules: List[DataRule]):
         super().__init__()
@@ -105,14 +102,11 @@ class CSVWatcher(Thread):
             os.rename(filepath, new_filepath)
 
     def run(self) -> None:
-        while self.active:
-            logging.info("Looking for csv data...")
-            file2table_list = self._look_for_csv()
-            if len(file2table_list) > 0:
-                logging.info("New historic data founded!")
-                logging.info(f"{file2table_list}")
-            self._insert_to_db(file2table_list)
-            self._rename_csv(file2table_list)
-            time.sleep(self.DELAY)
+        logging.info("Looking for csv data...")
+        file2table_list = self._look_for_csv()
+        if len(file2table_list) > 0:
+            logging.info("New historic data founded!")
+            logging.info(f"{file2table_list}")
+        self._insert_to_db(file2table_list)
+        self._rename_csv(file2table_list)
 
-        logging.warning("CSVWatcher not looking for historic data anymore.")

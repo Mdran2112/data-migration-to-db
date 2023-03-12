@@ -4,6 +4,7 @@ cryptography==38.0.3
 requests
 python-dotenv
 pandas
+apscheduler==3.10.1
 
 flask==2.2.2
 flask-smorest==0.40.0

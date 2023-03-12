@@ -1,5 +1,6 @@
 import os
 
+from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 from flask import Flask
 from flask_smorest import Api
@@ -37,6 +38,8 @@ def create_app():
 if __name__ == "__main__":
     if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
         watcher = CSVWatcher(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
-        watcher.start()
+        sched = BackgroundScheduler()
+        sched.add_job(watcher.run, 'interval', seconds=5)
+        sched.start()
 
     create_app().run(debug=True)
