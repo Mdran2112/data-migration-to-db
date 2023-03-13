@@ -17,9 +17,10 @@ from api.controllers.restore_controller import blp as restore_blp
 
 
 def create_app():
-
-    if os.getenv("FIND_HISTORIC", True) in [True, "True", "true"]:
-        # Look for cvs files containing historic data and load them into the Data base.
+    # Look for cvs files containing historic data and load them into the Data base.
+    watcher = CSVWatcherWorker(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
+    watcher.run()  # run search for historical data
+    if os.getenv("FIND_HISTORIC_SCHED", True) in [True, "True", "true"]:
         # The Watcher runs inside a BackgroundScheduler, that triggers the search every five minutes
         watcher = CSVWatcherWorker(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
         watcher.run() # run first search for historical data
@@ -29,7 +30,7 @@ def create_app():
 
     time.sleep(5)
 
-    if os.getenv("DB_BACKUP", True) in [True, "True", "true"]:
+    if os.getenv("DB_BACKUP_SCHED", True) in [True, "True", "true"]:
         # Backup of the database, every day from Monday to Friday at 6 a.m.
         backup_worker = BackupWorker(client=BACKUP_CLIENT)
         #backup_worker.run()
