@@ -2,16 +2,18 @@ import json
 import logging
 import time
 
+from flask.views import MethodView
 from flask_api.status import HTTP_200_OK
 from flask_smorest import Blueprint
 
+from api import RESTORE_SERVICE
 from api.controllers import auth
 
 blp = Blueprint("Restore", "restore", description="Restore table from avro backup file.")
 
 
 @blp.route("/restore/<string:table>")
-class RestoreController:
+class RestoreController(MethodView):
 
     @auth.login_required
     @blp.response(HTTP_200_OK,
@@ -25,7 +27,7 @@ class RestoreController:
         t0 = time.time()
         logging.info(f"Restoring table {table}...")
 
-        res = ...
+        res = RESTORE_SERVICE.restore(table=table)
 
         tf = time.time()
 

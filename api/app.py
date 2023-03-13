@@ -13,6 +13,7 @@ from globals import CSV_DIRECTORY_PATH
 from api.controllers.employees_controller import blp as employees_blp
 from api.controllers.departments_controller import blp as departments_blp
 from api.controllers.jobs_controllers import blp as jobs_blp
+from api.controllers.restore_controller import blp as restore_blp
 
 
 def create_app():
@@ -21,6 +22,7 @@ def create_app():
         # Look for cvs files containing historic data and load them into the Data base.
         # The Watcher runs inside a BackgroundScheduler, that triggers the search every five minutes
         watcher = CSVWatcherWorker(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
+        watcher.run() # run first search for historical data
         historic_csv_sched = BackgroundScheduler()
         historic_csv_sched.add_job(watcher.run, 'interval', seconds=60*5)
         historic_csv_sched.start()
@@ -30,6 +32,7 @@ def create_app():
     if os.getenv("DB_BACKUP", True) in [True, "True", "true"]:
         # Backup of the database, every day from Monday to Friday at 6 a.m.
         backup_worker = BackupWorker(client=BACKUP_CLIENT)
+        #backup_worker.run()
         backup_sched = BackgroundScheduler()
         backup_sched.add_job(backup_worker.run, 'cron', day_of_week='mon-fri', hour=6, minute=0)
         backup_sched.start()
@@ -48,6 +51,7 @@ def create_app():
     api.register_blueprint(employees_blp)
     api.register_blueprint(departments_blp)
     api.register_blueprint(jobs_blp)
+    api.register_blueprint(restore_blp)
 
     return app
 

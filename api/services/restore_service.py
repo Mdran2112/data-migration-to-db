@@ -41,7 +41,7 @@ class RestoreService:
             _object: Dict[str, Any]
             batch.append(_object)
             count += 1
-            if count == 1000:
+            if count == 1000 or reader.block_count == 0:
                 self.db_client.insert_to(table=table, objects=batch)
                 batch.clear()
 

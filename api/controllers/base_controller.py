@@ -6,7 +6,7 @@ from typing import Dict, Any
 from flask.views import MethodView
 from flask_smorest import Blueprint
 
-from api import SERVICE
+from api import TRANSACTION_SERVICE
 
 
 blp = Blueprint("Employees", "employees", description="")
@@ -19,7 +19,7 @@ class BaseController(MethodView):
     def post(self, input_params: Dict[str, Any]):
         t0 = time.time()
         logging.info(f"Inserting data into {self.table} DB...")
-        res = SERVICE.insert_to_db(table=self.table, objects=input_params[self.table])
+        res = TRANSACTION_SERVICE.insert_to_db(table=self.table, objects=input_params[self.table])
         tf = time.time()
 
         total_time = tf - t0
