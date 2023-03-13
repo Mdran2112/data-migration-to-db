@@ -9,7 +9,7 @@ from api.schemas import JobsBodySchema
 from database.models import JOB_TABLE
 from globals import HTTP_422_UNPROCESSABLE_ENTITY
 
-blp = Blueprint("Jobs", "jobs", description="")
+blp = Blueprint("Insert jobs", "jobs", description="Insert new jobs in the database.")
 
 
 @blp.route("/jobs")
