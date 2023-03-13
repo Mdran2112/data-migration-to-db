@@ -25,16 +25,33 @@ DB_BACKUP_SCHED=<Weather to schedule or not the backup generation. The backup wi
 
 When the REST API turns on, three tables in the Database will be created: `employees`, `departments` and `jobs`.
 
-The api container will create two volumes: `historic` and `backup`. Inside the historic volume
-must be the csv files, that the user want to migrate
+The api container will create two volumes: `historic` and `backup`. Inside the `historic` volume
+must be the csv files, that the user want to migrate. In the `backup` volume, backup avro files will be created.
 
 ### Historic data migration to Database
 
+Each csv file with historic data has to be named like:
 
+* `hired_employees.csv ---> employees table`
+* `departments.csv ---> departments table`
+* `jobs.csv ---> jobs table`
 
+A worker will look inside the volume and if it finds a csv named as mentioned before, it will grab the data and insert it
+in the correspondent table according the filename.
+
+### Database Backup
+
+If the environment variable `DB_BACKUP_SCHED` is set to `True`, a scheduler will build a backup from the three tables 
+every day at 6 a.m. (from Mon-Fri). The backup files will be named `employees.avro`, `departments.avro` and `jobs.avro`.
+
+You can use the `/restore/<table>` endpoint in the REST API to restore a table. The API will use the correspondent avro file for 
+each table that you want to restore.
+
+### API REST Docs
+See the swagger spec. URL: `http://<host>:5000/swagger`
 
 ### Tag creation 
-The repository has a github workflow for CD when merging to master.
+The repository has a github workflow for tag creation when merging to master.
 When you make a PR to master, include one of the following flags in the commit message string.
 
 * MAJOR CHANGE: `#major`
@@ -47,7 +64,5 @@ For example if initial version is v0.0.0, commit message
 Then, if I make another PR to master with commit `FIX - bug in certain feature #patch`
 will lead to `v0.1.1`
 
-The CD workflow will build the new tag and publish it in the repository.
+The workflow will build the new tag and publish it in the repository.
 
-### API REST Docs
-See the swagger spec. URL: `http://<host>:5000/swagger`
