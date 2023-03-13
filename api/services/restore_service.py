@@ -31,12 +31,13 @@ class RestoreService:
         :param table: Database table name.
         :return:
         """
-        reader = DataFileReader(open(join(BACKUP_DIRECTORY_PATH, table + ".avro"), "rb"), DatumReader())
+        filename = table + ".avro"
+        reader = DataFileReader(open(join(BACKUP_DIRECTORY_PATH, filename), "rb"), DatumReader())
         batch = []
         count = 0
         # all current data in the table will be deleted and replaced with backup data.
         self.db_client.delete(table=table)
-        for _object in reader:
+        for _object in reader:  # Backup data will be inserted in batches of length 1000
             _object: Dict[str, Any]
             batch.append(_object)
             count += 1
@@ -45,7 +46,7 @@ class RestoreService:
                 batch.clear()
 
         return {
-            "message": "Table restored from avro backup file.",
+            "message": f"Table restored from {filename} backup file.",
             "code": HTTP_200_OK,
             "status": "Created"
         }
