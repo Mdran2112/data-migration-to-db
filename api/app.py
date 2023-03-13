@@ -22,8 +22,6 @@ def create_app():
     watcher.run()  # run search for historical data
     if os.getenv("FIND_HISTORIC_SCHED", True) in [True, "True", "true"]:
         # The Watcher runs inside a BackgroundScheduler, that triggers the search every five minutes
-        watcher = CSVWatcherWorker(csv_directory_path=CSV_DIRECTORY_PATH, client=DB_CLIENT, rules=[AllFieldsRequired()])
-        watcher.run() # run first search for historical data
         historic_csv_sched = BackgroundScheduler()
         historic_csv_sched.add_job(watcher.run, 'interval', seconds=60*5)
         historic_csv_sched.start()

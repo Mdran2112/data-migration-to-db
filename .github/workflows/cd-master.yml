@@ -1,0 +1,25 @@
+name: master
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build-new-tag:
+    name: Create and publish new tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Bump version and push tag
+        id: tag
+        uses: anothrNick/github-tag-action@1.44.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          INITIAL_VERSION: 0.0.0
+
+      - name: Show tag
+        run: echo ${{ steps.tag.outputs.new_tag }}
