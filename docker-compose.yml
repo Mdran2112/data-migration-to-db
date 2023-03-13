@@ -7,10 +7,24 @@ services:
         ports:
             - 3306:3306
         environment:
-            #MYSQL_USER: ${MYSQL_USER}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
-            #MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         volumes:
             - ./mysql:/var/lib/mysql
 
+    db-migration-api:
+        container_name: db-migration-api
+        image: db-migration-api:latest
+        ports:
+            - 5000:5000
+        environment:
+            - MYSQL_DATABASE=db
+            - MYSQL_ROOT_PASSWORD=admin
+            - DATABASE_URL=mysql+pymysql://root:admin@localhost:3306/db
+            - CSV_DIRECTORY_PATH=/app/historic
+            - BACKUP_DIRECTORY_PATH=/app/backup
+            - FIND_HISTORIC=True
+            - DB_BACKUP=True
+
+        depends_on:
+            - mysql_db
