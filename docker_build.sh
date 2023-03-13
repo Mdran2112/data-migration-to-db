@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build --tag=db-migration-api.
+docker build --tag=db-migration-api .
