@@ -23,4 +23,3 @@ jobs:
 
       - name: Show tag
         run: echo ${{ steps.tag.outputs.new_tag }}
-
