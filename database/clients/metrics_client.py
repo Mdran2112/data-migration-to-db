@@ -1,12 +1,9 @@
 import logging
 from typing import List, Dict, Any
 
-from sqlalchemy import delete
+from sqlalchemy.engine import Result, Row
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-
-from database import Base
-from database.models import EMPLOYEES_TABLE, DEPARTMENT_TABLE, JOB_TABLE
 
 
 class BusinessMetricsClient:
@@ -21,7 +18,20 @@ class BusinessMetricsClient:
     def __init__(self, session: Session) -> None:
         self._session = session
 
-    def hired_by_quarter(self, year: int = 2021) -> List[Dict[str, Any]]:
+    def _get(self, query: str) -> List[Row]:
+        try:
+            logging.info(f"The following query will be executed:")
+            logging.info(query)
+            _objects = self._session.execute(query).fetchall()
+            return _objects
+        except IntegrityError as ie:
+            self._session.rollback()
+            raise ie
+        except Exception as ex:
+            self._session.rollback()
+            raise ex
+
+    def hired_by_quarter(self, year: int = 2021) -> List[Row]:
         """
         Gets the number of employees hired for each job and department in a certain year divided by quarter.
         The results are ordered alphabetically by department and job.
@@ -42,9 +52,11 @@ class BusinessMetricsClient:
                 GROUP BY d.department, j.job
                 ORDER BY d.department ASC, j.job ASC;
         """
-        ...
+        logging.info("Requesting hired employees by quarter...")
+        _objects = self._get(query)
+        return _objects
 
-    def hired_of_departments(self, year: int = 2021) -> List[Dict[str, Any]]:
+    def hired_of_departments(self, year: int = 2021) -> List[Row]:
         """
         Gets the list of department_id, department and number of employees hired of each department that
         hired more employees than the mean of employees hired in 2021 for all departments.
@@ -70,3 +82,6 @@ class BusinessMetricsClient:
                 )
                 ORDER BY hired DESC;
             """
+        logging.info("Requesting number of employees hired of each department...")
+        _objects = self._get(query)
+        return _objects
