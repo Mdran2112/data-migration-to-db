@@ -31,4 +31,6 @@ def verify_password_admin(username, password):
 
 @stakeholder_auth.verify_password
 def verify_password_stkholder(username, password):
-    return verify_pass(username, password, stakeholder_user)
+    admin_and_stkholder = admin_users.copy()
+    admin_and_stkholder.update(stakeholder_user)  # Both admins and stakeholders are allowed to access to metrics
+    return verify_pass(username, password, admin_and_stkholder)
