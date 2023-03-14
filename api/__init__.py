@@ -8,7 +8,7 @@ load_dotenv()
 
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(asctime)s;%(levelname)s;%(message)s")
 
 from api.rules import AllFieldsRequired
 from api.services.transaction_service import TransactionService

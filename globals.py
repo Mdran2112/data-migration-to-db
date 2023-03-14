@@ -2,6 +2,7 @@ import os
 
 CSV_DIRECTORY_PATH = os.getenv("CSV_DIRECTORY_PATH", "/app/historic")
 BACKUP_DIRECTORY_PATH = os.getenv("BACKUP_DIRECTORY_PATH", "/app/backup")
+REPORTS_DIRECTORY_PATH = os.getenv("REPORTS_DIRECTORY_PATH", "/app/reports")
 
 API_ADMIN_USER = os.getenv("API_ADMIN_USER", "admin")
 API_ADMIN_PASSWORD = os.getenv("API_ADMIN_PASSWORD", "pass")

@@ -20,6 +20,7 @@ services:
         volumes:
             - ./historic:/app/historic
             - ./backup:/app/backup
+            - ./reports:/app/reports
         env_file: .env
 
         depends_on:
