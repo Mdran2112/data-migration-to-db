@@ -14,8 +14,8 @@ Use the `docker-compose.yml` to deploy the services: MySQL database and the API.
 The compose will use some environment variables that have to be defined in a .env file:
 
 ```
-API_USER=<User name for api authentication.>
-API_PASSWORD=<Password for api authentication.>
+API_ADMIN_USER=<User name for api authentication.>
+API_ADMIN_PASSWORD=<Password for api authentication.>
 MYSQL_DATABASE=<data base name. Ex: db>
 MYSQL_ROOT_PASSWORD=<Password for root user.>
 DATABASE_URL=<URL for connecting sqlalchemy with database. Ex: mysql+pymysql://root:admin@{mysql-container-name}:3306/db>

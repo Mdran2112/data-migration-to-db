@@ -23,10 +23,10 @@ class MetricsService:
         :param year: DYear of interest.
         :return:
         """
-        rows = self.db_client.hired_by_quarter(year)
+        objs = self.db_client.hired_by_quarter(year)
 
         return {
-            "response": ...,
+            "response": objs,
             "code": HTTP_200_OK,
             "status": "Ok"
         }
@@ -35,13 +35,13 @@ class MetricsService:
     def get_hired_of_departments(self, year: int = 2021) -> Dict[str, Any]:
         """
 
-        :param year: DYear of interest.
+        :param year: Year of interest.
         :return:
         """
-        rows = self.db_client.hired_of_departments(year)
+        objs = self.db_client.hired_of_departments(year)
 
         return {
-            "response": ...,
+            "response": objs,
             "code": HTTP_200_OK,
             "status": "Ok"
         }

@@ -31,7 +31,14 @@ class BusinessMetricsClient:
             self._session.rollback()
             raise ex
 
-    def hired_by_quarter(self, year: int = 2021) -> List[Row]:
+    @staticmethod
+    def _serialize_rows(cols: List[str], _objects: List[Row]) -> List[Dict[str, Any]]:
+        serialized_objects = []
+        for obj in _objects:
+            serialized_objects.append({col: value for col, value in zip(cols, obj)})
+        return serialized_objects
+
+    def hired_by_quarter(self, year: int = 2021) -> List[Dict[str, Any]]:
         """
         Gets the number of employees hired for each job and department in a certain year divided by quarter.
         The results are ordered alphabetically by department and job.
@@ -54,9 +61,11 @@ class BusinessMetricsClient:
         """
         logging.info("Requesting hired employees by quarter...")
         _objects = self._get(query)
-        return _objects
+        cols = ["department", "job", "Q1", "Q2", "Q3", "Q4"]
+        serialized_objects = self._serialize_rows(cols=cols, _objects=_objects)
+        return serialized_objects
 
-    def hired_of_departments(self, year: int = 2021) -> List[Row]:
+    def hired_of_departments(self, year: int = 2021) -> List[Dict[str, Any]]:
         """
         Gets the list of department_id, department and number of employees hired of each department that
         hired more employees than the mean of employees hired in 2021 for all departments.
@@ -84,4 +93,6 @@ class BusinessMetricsClient:
             """
         logging.info("Requesting number of employees hired of each department...")
         _objects = self._get(query)
-        return _objects
+        cols = ["id", "department", "hired"]
+        serialized_objects = self._serialize_rows(cols=cols, _objects=_objects)
+        return serialized_objects

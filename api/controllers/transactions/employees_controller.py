@@ -1,10 +1,10 @@
 from typing import Dict, Any
 
-from flask_api.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from flask_api.status import HTTP_201_CREATED
 from flask_smorest import Blueprint
 
-from api.controllers import auth
-from api.controllers.base_controller import BaseController
+from api.controllers import admin_auth
+from api.controllers.transactions.base_controller import BaseController
 from api.schemas import EmployeesBodySchema
 from database.models import EMPLOYEES_TABLE
 from globals import HTTP_422_UNPROCESSABLE_ENTITY
@@ -16,7 +16,7 @@ blp = Blueprint("Insert employees", "employees", description="Insert new employe
 class EmployeesController(BaseController):
     table: str = EMPLOYEES_TABLE
 
-    @auth.login_required
+    @admin_auth.login_required
     @blp.arguments(EmployeesBodySchema,
                    example={
                        "employees": [

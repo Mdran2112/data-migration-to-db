@@ -10,10 +10,11 @@ from api.workers.backup_worker import BackupWorker
 from api.workers.csv_watcher_worker import CSVWatcherWorker
 from globals import CSV_DIRECTORY_PATH
 
-from api.controllers.employees_controller import blp as employees_blp
-from api.controllers.departments_controller import blp as departments_blp
-from api.controllers.jobs_controllers import blp as jobs_blp
-from api.controllers.restore_controller import blp as restore_blp
+from api.controllers.transactions.employees_controller import blp as employees_blp
+from api.controllers.transactions.departments_controller import blp as departments_blp
+from api.controllers.transactions.jobs_controllers import blp as jobs_blp
+from api.controllers.restore.restore_controller import blp as restore_blp
+from api.controllers.metrics.metrics_controller import blp as metrics_blp
 
 
 def create_app():
@@ -51,6 +52,7 @@ def create_app():
     api.register_blueprint(departments_blp)
     api.register_blueprint(jobs_blp)
     api.register_blueprint(restore_blp)
+    api.register_blueprint(metrics_blp)
 
     return app
 

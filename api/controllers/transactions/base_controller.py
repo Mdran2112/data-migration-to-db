@@ -4,12 +4,8 @@ import time
 from typing import Dict, Any
 
 from flask.views import MethodView
-from flask_smorest import Blueprint
 
 from api import TRANSACTION_SERVICE
-
-
-blp = Blueprint("Employees", "employees", description="")
 
 
 class BaseController(MethodView):
