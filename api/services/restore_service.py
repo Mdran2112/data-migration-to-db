@@ -48,5 +48,5 @@ class RestoreService:
         return {
             "message": f"Table restored from {filename} backup file.",
             "code": HTTP_200_OK,
-            "status": "Created"
+            "status": "Ok"
         }

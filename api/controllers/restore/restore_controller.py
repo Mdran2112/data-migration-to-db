@@ -8,7 +8,7 @@ from flask_api.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from flask_smorest import Blueprint
 
 from api import RESTORE_SERVICE
-from api.controllers import auth
+from api.controllers import admin_auth
 from database.models import EMPLOYEES_TABLE, DEPARTMENT_TABLE, JOB_TABLE
 
 blp = Blueprint("Restore", "restore", description="Restore table from avro backup file.")
@@ -19,7 +19,7 @@ TABLES = [EMPLOYEES_TABLE, DEPARTMENT_TABLE, JOB_TABLE]
 @blp.route("/restore/<string:table>")
 class RestoreController(MethodView):
 
-    @auth.login_required
+    @admin_auth.login_required
     @blp.response(HTTP_200_OK,
                   description="Table created from avro backup file.",
                   example={

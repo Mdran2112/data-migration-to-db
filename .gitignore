@@ -6,3 +6,4 @@ mysql
 historic
 backup
 .env
+mysql-compose.yml
