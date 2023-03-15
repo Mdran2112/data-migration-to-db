@@ -26,7 +26,7 @@ class MetricsService:
     @staticmethod
     def _plot_report_and_save(objs: List[Dict[str, Any]], x: str, y: List[str],
                               html_filename: str):
-        logging.info("Generating plot box...")
+        logging.info("Generating histogram...")
         df = pd.DataFrame({
             x: list(map(lambda o: o[x], objs)),
         })
@@ -35,7 +35,7 @@ class MetricsService:
         fig = px.histogram(df, x=x, y=y, barmode='group')
         output_filepath = join(REPORTS_DIRECTORY_PATH, html_filename)
         fig.write_html(output_filepath)
-        logging.info(f"Plot box saved into file system: {output_filepath}...")
+        logging.info(f"Histogram saved into file system: {output_filepath}...")
 
 
     @service_handle_error
