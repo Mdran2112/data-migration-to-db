@@ -13,7 +13,8 @@ from api.controllers import stakeholder_auth
 import json
 
 
-blp = Blueprint("Metrics", "metrics", description="Metrics requested by stakeholder.")
+blp = Blueprint("Metrics", "metrics", description="Metrics requested by stakeholder. Creates a visual report and "
+                                                  "stores them in the file system (reports volume)")
 
 
 class MetricsEmployeesBase(MethodView):
