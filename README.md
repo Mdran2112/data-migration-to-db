@@ -18,6 +18,7 @@ API_ADMIN_USER=<Admin's User name for api authentication.>
 API_ADMIN_PASSWORD=<Admin's Password for api authentication.>
 STAKEHOLDER_USER=<Stakeholder's name for api authentication.>
 STAKEHOLDER_PASSWORD=<Stakeholder's password for api authentication.>
+
 MYSQL_DATABASE=<data base name. Ex: db>
 MYSQL_ROOT_PASSWORD=<Password for root user.>
 DATABASE_URL=<URL for connecting sqlalchemy with database. Ex: mysql+pymysql://root:admin@{mysql-container-name}:3306/db>
@@ -27,6 +28,7 @@ DB_BACKUP_SCHED=<Weather to schedule or not the backup generation. The backup wi
 
 The Admin users can interact with all endpoints.
 The "stakeholder" is only allowed to interact with the metrics endpoints (see Swagger doc).
+
 
 When the REST API turns on, three tables in the Database will be created: `employees`, `departments` and `jobs`.
 

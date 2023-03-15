@@ -5,11 +5,13 @@ from typing import Dict, Any, List
 import pandas as pd
 import plotly.express as px
 
+
 from flask_api.status import HTTP_200_OK
 
 from api.utils import service_handle_error
 from database import BusinessMetricsClient
 from globals import REPORTS_DIRECTORY_PATH
+
 
 
 class MetricsService:
@@ -35,6 +37,7 @@ class MetricsService:
         fig.write_html(output_filepath)
         logging.info(f"Plot box saved into file system: {output_filepath}...")
 
+
     @service_handle_error
     def get_hired_by_quarters(self, year: int = 2021) -> Dict[str, Any]:
         """
@@ -46,6 +49,7 @@ class MetricsService:
         for x in ["department", "job"]:
             self._plot_report_and_save(objs=objs, x=x, y=["Q1", "Q2", "Q3", "Q4"],
                                        html_filename=f"hired_employees_by_{x}_quarters.html")
+
         return {
             "response": objs,
             "code": HTTP_200_OK,
@@ -62,6 +66,7 @@ class MetricsService:
         objs = self.db_client.hired_of_departments(year)
         self._plot_report_and_save(objs=objs, x="department", y=["hired"],
                                    html_filename="hired_employees_of_departments.html")
+
 
         return {
             "response": objs,

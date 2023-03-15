@@ -12,6 +12,7 @@ from api.controllers import stakeholder_auth
 
 import json
 
+
 blp = Blueprint("Metrics", "metrics", description="Metrics requested by stakeholder.")
 
 
@@ -19,6 +20,7 @@ class MetricsEmployeesBase(MethodView):
     service_function: Callable[[int], Dict[str, Any]]
 
     def put(self, year: int):
+
         t0 = time.time()
         logging.info(f"Requesting metrics...")
         logging.info(f"Year: {year}")
@@ -37,6 +39,7 @@ class MetricsEmployeesBase(MethodView):
 
 @blp.route("/metrics/<int:year>/employees/quarters")
 class MetricsEmployeesQuartersController(MetricsEmployeesBase):
+
     service_function: Callable[[int], Dict[str, Any]] = METRICS_SERVICE.get_hired_by_quarters
 
     @stakeholder_auth.login_required
@@ -68,11 +71,13 @@ class MetricsEmployeesQuartersController(MetricsEmployeesBase):
                   })
     def put(self, year: int):
         res, code = super().put(year)
+
         return res, code
 
 
 @blp.route("/metrics/<int:year>/employees/departments")
 class MetricsEmployeesDepartmentsController(MetricsEmployeesBase):
+
     service_function: Callable[[int], Dict[str, Any]] = METRICS_SERVICE.get_hired_of_departments
 
     @stakeholder_auth.login_required
@@ -99,4 +104,5 @@ class MetricsEmployeesDepartmentsController(MetricsEmployeesBase):
                   })
     def put(self, year: int):
         res, code = super().put(year)
+
         return res, code
