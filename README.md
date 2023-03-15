@@ -32,8 +32,9 @@ The "stakeholder" is only allowed to interact with the metrics endpoints (see Sw
 
 When the REST API turns on, three tables in the Database will be created: `employees`, `departments` and `jobs`.
 
-The api container will create two volumes: `historic` and `backup`. Inside the `historic` volume
+The api container will create three volumes: `historic`, `backup` and `reports`. Inside the `historic` volume
 must be the csv files, that the user want to migrate. In the `backup` volume, backup avro files will be created.
+Finally, in the `reports` volume will be stored visual reports requested by using the metrics endpoints (see Swagger documentation.)
 
 ### Historic data migration to Database
 
