@@ -5,13 +5,11 @@ from typing import Dict, Any, List
 import pandas as pd
 import plotly.express as px
 
-
 from flask_api.status import HTTP_200_OK
 
 from api.utils import service_handle_error
 from database import BusinessMetricsClient
 from globals import REPORTS_DIRECTORY_PATH
-
 
 
 class MetricsService:
@@ -37,18 +35,13 @@ class MetricsService:
         fig.write_html(output_filepath)
         logging.info(f"Histogram saved into file system: {output_filepath}...")
 
-
     @service_handle_error
     def get_hired_by_quarters(self, year: int = 2021) -> Dict[str, Any]:
         """
-
         :param year: Year of interest.
         :return:
         """
         objs = self.db_client.hired_by_quarter(year)
-        for x in ["department", "job"]:
-            self._plot_report_and_save(objs=objs, x=x, y=["Q1", "Q2", "Q3", "Q4"],
-                                       html_filename=f"hired_employees_by_{x}_quarters.html")
 
         return {
             "response": objs,
@@ -59,17 +52,30 @@ class MetricsService:
     @service_handle_error
     def get_hired_of_departments(self, year: int = 2021) -> Dict[str, Any]:
         """
-
         :param year: Year of interest.
         :return:
         """
         objs = self.db_client.hired_of_departments(year)
-        self._plot_report_and_save(objs=objs, x="department", y=["hired"],
-                                   html_filename="hired_employees_of_departments.html")
-
 
         return {
             "response": objs,
             "code": HTTP_200_OK,
             "status": "Ok"
         }
+
+    @service_handle_error
+    def visual_report_hired_by_quarters(self, year: int = 2021) -> None:
+        resp = self.get_hired_by_quarters(year)
+        objs = resp["response"]
+        for x in ["department", "job"]:
+            self._plot_report_and_save(objs=objs, x=x, y=["Q1", "Q2", "Q3", "Q4"],
+                                       html_filename=f"hired_employees_by_{x}_quarters.html")
+        return None
+
+    @service_handle_error
+    def visual_report_hired_of_departments(self, year: int = 2021) -> None:
+        resp = self.get_hired_of_departments(year)
+        objs = resp["response"]
+        self._plot_report_and_save(objs=objs, x="department", y=["hired"],
+                                   html_filename="hired_employees_of_departments.html")
+        return None
