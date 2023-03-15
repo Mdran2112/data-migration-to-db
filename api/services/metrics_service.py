@@ -35,6 +35,7 @@ class MetricsService:
         fig.write_html(output_filepath)
         logging.info(f"Histogram saved into file system: {output_filepath}...")
 
+
     @service_handle_error
     def get_hired_by_quarters(self, year: int = 2021) -> Dict[str, Any]:
         """
