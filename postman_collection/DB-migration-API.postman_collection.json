@@ -1,0 +1,242 @@
+{
+	"info": {
+		"_postman_id": "c0a555b4-6cf4-41e1-b7de-00f086505614",
+		"name": "DB-migration-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10049073"
+	},
+	"item": [
+		{
+			"name": "employees",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{API_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"employees\": [\n    {\n      \"id\": 2009,\n      \"name\": \"Martin\",\n      \"datetime\": \"2023-03-10T02:48:42\",\n      \"department_id\": 4,\n      \"job_id\": 71\n    },\n    {\n      \"id\": 2008,\n      \"name\": \"Matìas\",\n      \"datetime\": \"2023-03-10T02:48:42\",\n      \"department_id\": 4,\n      \"job_id\": 72\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/employees",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "departments",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{API_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"departments\": [\n    {\n      \"id\": 6,\n      \"department\": \"Maintenance\"\n    },\n    {\n      \"id\": 9,\n      \"department\": \"Staff\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/departments",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"departments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "jobs",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{API_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jobs\": [\n    {\n      \"id\": 1,\n      \"job\": \"Manager\"\n    },\n    {\n      \"id\": 2,\n      \"job\": \"Recruiter\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/jobs",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "restore table",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{API_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/restore/jobs",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"restore",
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "employes by quarters",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pass2",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{STAKEHOLDER_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/metrics/2021/employees/quarters",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"metrics",
+						"2021",
+						"employees",
+						"quarters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "employees for each department",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pass2",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{STAKEHOLDER_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}:{{PORT}}/metrics/2021/employees/departments",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"metrics",
+						"2021",
+						"employees",
+						"departments"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
