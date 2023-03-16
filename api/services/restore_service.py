@@ -44,6 +44,7 @@ class RestoreService:
             if count == 1000 or reader.block_count == 0:
                 self.db_client.insert_to(table=table, objects=batch)
                 batch.clear()
+                count = 0
 
         return {
             "message": f"Table restored from {filename} backup file.",
