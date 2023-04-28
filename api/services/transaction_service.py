@@ -27,7 +27,7 @@ class TransactionService:
         :return:
         """
         # apply filter by rules
-        objects = list(filter(lambda o: True in [rule.satisfies(o) for rule in self.rules], objects))
+        objects = list(filter(lambda o: False not in [rule.satisfies(o) for rule in self.rules], objects))
         self.db_client.insert_to(table=table, objects=objects)
         return {
             "message": f"Data inserted in {table} table.",
